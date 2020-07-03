@@ -4,8 +4,8 @@ import { ThunkAction } from 'redux-thunk'
 
 import Axios from '../helpers/axios'
 import { Product } from '../types/Product'
-import { FetchedProductsAction } from './actions'
-import { FETCHING_PRODUCTS, FETCHED_PRODUCTS } from './constants'
+import { FetchedProductsAction } from '../store/actions'
+import { FETCHING_PRODUCTS, FETCHED_PRODUCTS } from '../store/constants'
 
 // ThunkAction<(1), (2), (3), (4)>
 // (1) The return value of the internal async function that will be returned by this thunk

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 // hooks
-import useFilters from '../hooks/useFilters'
+import { useFilters } from '../hooks/useFilters'
 
 const Header = () => {
   const { toggleShowingFilters } = useFilters()
@@ -15,7 +15,7 @@ const Header = () => {
         REACT.DEV
       </PageTitle>
 
-      <FilterButton onClick={toggleShowingFilters}>Filter</FilterButton>
+      <FilterButton data-testid='FilterButton' onClick={toggleShowingFilters}>Filter</FilterButton>
     </Wrapper>
   )
 }

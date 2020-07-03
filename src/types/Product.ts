@@ -3,7 +3,7 @@ export interface Product {
   image: string | null
   name: string
   price?: string
-  brand: 'Marke'
+  brand: string
   createdAt: string
   isActive: true
   isNew: true

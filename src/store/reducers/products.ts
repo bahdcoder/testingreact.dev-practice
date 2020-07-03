@@ -1,7 +1,7 @@
 import { Reducer } from 'redux'
-import { ProductActions } from '../actions'
+import { ProductActions } from '../../store/actions'
 import { ProductsReducerState } from '../../types/Store'
-import { FETCHING_PRODUCTS, FETCHED_PRODUCTS } from '../constants'
+import { FETCHING_PRODUCTS, FETCHED_PRODUCTS } from '../../store/constants'
 
 export const productsInitialState: ProductsReducerState = {
   data: [],
