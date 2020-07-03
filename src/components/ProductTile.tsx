@@ -1,24 +1,26 @@
-import React, { FC } from 'react';
-import styled from 'styled-components';
-import { Product } from '../types/Product';
-import { BASE_URL } from '../helpers/constants';
+import React, { FC } from 'react'
+import styled from 'styled-components'
+import { Product } from '../types/Product'
+import { BASE_URL } from '../helpers/constants'
 
 const ProductTile: FC<Product> = ({ name, price, image }) => {
   return (
     <Wrapper data-testid="ProductTile">
-      <ImageWrapper>{image && <Image src={`${BASE_URL}${image}`} alt={name} />}</ImageWrapper>
+      <ImageWrapper>
+        {image && <Image src={`${BASE_URL}${image}`} alt={name} />}
+      </ImageWrapper>
       <Content>
         <Name>{name}</Name>
         <Price>{price}</Price>
       </Content>
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-`;
+`
 
 const ImageWrapper = styled.div`
   position: relative;
@@ -28,7 +30,7 @@ const ImageWrapper = styled.div`
   padding-top: 133%;
   border-radius: 2px;
   overflow: hidden;
-`;
+`
 
 const Image = styled.img`
   position: absolute;
@@ -44,20 +46,20 @@ const Image = styled.img`
   height: 100%;
   width: 100%;
   object-fit: contain;
-`;
+`
 
 const Name = styled.div`
   font-size: 12px;
   font-weight: bold;
-`;
+`
 
 const Price = styled.div`
   font-size: 12px;
-`;
+`
 
 const Content = styled.div`
   line-height: 1.4em;
   padding: 15px;
-`;
+`
 
-export default ProductTile;
+export default ProductTile

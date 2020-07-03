@@ -1,41 +1,48 @@
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
-import React, { FunctionComponent, useRef, Fragment, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom'
+import styled from 'styled-components'
+import React, {
+  FunctionComponent,
+  useRef,
+  Fragment,
+  useState,
+  useEffect,
+} from 'react'
 
 // hooks
-import useFilters from '../hooks/useFilters';
-import useOutsideClick from '../hooks/useOutsideClick';
+import useFilters from '../hooks/useFilters'
+import useOutsideClick from '../hooks/useOutsideClick'
 
 const FiltersOffCanvas: FunctionComponent = () => {
-  const offCanvasRef = useRef();
-  const [portalNode] = useState(document.createElement('div'));
+  const offCanvasRef = useRef<HTMLDivElement>(null)
+  const [portalNode] = useState(document.createElement('div'))
 
   useEffect(() => {
     document.body.appendChild(portalNode)
 
     return () => portalNode.remove()
-  }, [])
+  }, [portalNode])
 
-  const {
-    showingFilters,
-    toggleShowingFilters,
-  } = useFilters();
+  const { showingFilters, toggleShowingFilters } = useFilters()
 
   useOutsideClick(offCanvasRef, () => {
     if (showingFilters) {
-      toggleShowingFilters();
+      toggleShowingFilters()
     }
-  });
+  })
 
   return ReactDOM.createPortal(
     <Fragment>
       <Overlay showingFilters={showingFilters} />
-      <CanvasWrapper ref={offCanvasRef as any} showingFilters={showingFilters}>
+      <CanvasWrapper ref={offCanvasRef} showingFilters={showingFilters}>
         {showingFilters ? (
           <InnerWrapper>
             <Header>
               <span>Filter products</span>
-              <CloseCanvas data-testid='CloseCanvas' onClick={toggleShowingFilters} viewBox="0 0 14 24">
+              <CloseCanvas
+                data-testid="CloseCanvas"
+                onClick={toggleShowingFilters}
+                viewBox="0 0 14 24"
+              >
                 <path
                   fill="#000"
                   fillRule="nonzero"
@@ -44,17 +51,16 @@ const FiltersOffCanvas: FunctionComponent = () => {
               </CloseCanvas>
             </Header>
 
-            <InnerContent>
-              
-            </InnerContent>
+            <InnerContent></InnerContent>
 
             <Footer>
-              <ResetToDefaultButton
-                onClick={console.log}
-              >
+              <ResetToDefaultButton onClick={console.log}>
                 Reset to defaults
               </ResetToDefaultButton>
-              <ViewResultsButton data-testid='ViewResultsButton' onClick={toggleShowingFilters}>
+              <ViewResultsButton
+                data-testid="ViewResultsButton"
+                onClick={toggleShowingFilters}
+              >
                 View results
               </ViewResultsButton>
             </Footer>
@@ -63,13 +69,13 @@ const FiltersOffCanvas: FunctionComponent = () => {
       </CanvasWrapper>
     </Fragment>,
     portalNode,
-  );
-};
+  )
+}
 
 const InnerContent = styled.div`
   flex-grow: 1;
   background-color: #f5f5f5;
-`;
+`
 
 const ResetToDefaultButton = styled.button`
   margin-right: 10px;
@@ -101,7 +107,7 @@ const ResetToDefaultButton = styled.button`
   @media (min-width: 1024px) {
     width: auto;
   }
-`;
+`
 
 const ViewResultsButton = styled.button`
   font-size: 14px;
@@ -129,7 +135,7 @@ const ViewResultsButton = styled.button`
   @media (min-width: 1024px) {
     width: 100px;
   }
-`;
+`
 
 const InnerWrapper = styled.div`
   width: 100%;
@@ -137,7 +143,7 @@ const InnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
+`
 
 const Footer = styled.footer`
   display: flex;
@@ -150,13 +156,13 @@ const Footer = styled.footer`
   @media (min-width: 1024px) {
     flex-direction: row;
   }
-`;
+`
 
 const CloseCanvas = styled.svg`
   width: 14px;
   height: 14px;
   cursor: pointer;
-`;
+`
 
 const Header = styled.header`
   padding: 20px 30px;
@@ -165,10 +171,10 @@ const Header = styled.header`
   justify-content: space-between;
   box-shadow: rgba(0, 0, 0, 0.04) 0px 10px 15px 0px,
     rgba(0, 0, 0, 0.05) 0px 2px 2px 0px;
-`;
+`
 
 const Overlay = styled.div<{
-  showingFilters: boolean;
+  showingFilters: boolean
 }>`
   z-index: 99;
   height: 100vh;
@@ -176,26 +182,26 @@ const Overlay = styled.div<{
   position: absolute;
 
   @media (min-width: 1024px) {
-    width: ${props => (props.showingFilters ? 'calc(100% - 410px)' : '0px')};
+    width: ${(props) => (props.showingFilters ? 'calc(100% - 410px)' : '0px')};
   }
 
   transition: 0.25s;
   background-color: rgba(0, 0, 0, 0.25);
-`;
+`
 
 const CanvasWrapper = styled.div<{
-  showingFilters: boolean;
+  showingFilters: boolean
 }>`
-  width: ${props => (props.showingFilters ? '100%' : '0px')};
+  width: ${(props) => (props.showingFilters ? '100%' : '0px')};
   position: absolute;
   right: 0;
   top: 0px;
   @media (min-width: 1024px) {
-    width: ${props => (props.showingFilters ? '410px' : '0px')};
+    width: ${(props) => (props.showingFilters ? '410px' : '0px')};
   }
   background-color: #ffffff;
   height: 100vh;
   transition: 0.25s;
-`;
+`
 
-export default FiltersOffCanvas;
+export default FiltersOffCanvas

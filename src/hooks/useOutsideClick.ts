@@ -1,5 +1,5 @@
-import { useEffect, RefObject } from 'react';
-import elementContains from 'document.contains';
+import { useEffect, RefObject } from 'react'
+import elementContains from 'document.contains'
 
 const useOutsideClick: <Element>(
   elementRef: RefObject<Element>,
@@ -8,15 +8,14 @@ const useOutsideClick: <Element>(
   useEffect(() => {
     const clickEventListener = (event: DocumentEventMap['click']) => {
       if (!elementContains(elementRef.current, event.target)) {
-        handleOutsideClick(event);
+        handleOutsideClick(event)
       }
-    };
+    }
 
-    document.addEventListener('click', clickEventListener, true);
+    document.addEventListener('click', clickEventListener, true)
 
-    return () =>
-      document.removeEventListener('click', clickEventListener, true);
-  }, [elementRef, handleOutsideClick]);
-};
+    return () => document.removeEventListener('click', clickEventListener, true)
+  }, [elementRef, handleOutsideClick])
+}
 
-export default useOutsideClick;
+export default useOutsideClick

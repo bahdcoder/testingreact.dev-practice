@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from 'react'
+import styled from 'styled-components'
 
 // hooks
-import useFilters from '../hooks/useFilters';
+import useFilters from '../hooks/useFilters'
 
 const Header = () => {
-  const { toggleShowingFilters } = useFilters();
+  const { toggleShowingFilters } = useFilters()
 
   return (
     <Wrapper>
@@ -17,8 +17,8 @@ const Header = () => {
 
       <FilterButton onClick={toggleShowingFilters}>Filter</FilterButton>
     </Wrapper>
-  );
-};
+  )
+}
 
 const PageTitle = styled.div`
   display: flex;
@@ -43,19 +43,19 @@ const FilterButton = styled.button`
   &:hover {
     background-color: rgb(245, 245, 245);
   }
-`;
+`
 
 const SpanHiddenOnMobile = styled.span`
   display: none;
   @media (min-width: 1024px) {
     display: inline;
   }
-`;
+`
 
 const Wrapper = styled.header`
   display: flex;
   padding: 10px 20px;
   justify-content: space-between;
-`;
+`
 
-export default Header;
+export default Header

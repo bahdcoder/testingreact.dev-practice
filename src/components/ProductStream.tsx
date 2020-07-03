@@ -1,21 +1,21 @@
-import React, { FC } from 'react';
-import styled from 'styled-components';
-import { Product } from '../types/Product';
-import ProductTile from './ProductTile';
+import React, { FC } from 'react'
+import styled from 'styled-components'
+import { Product } from '../types/Product'
+import ProductTile from './ProductTile'
 
 interface Props {
-  products: Product[];
+  products: Product[]
 }
 
 const ProductStream: FC<Props> = ({ products }) => {
   return (
     <Wrapper>
-      {products.map(product => (
+      {products.map((product) => (
         <ProductTile key={product.id} {...product} />
       ))}
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,6 +31,6 @@ const Wrapper = styled.div`
       width: 25%;
     }
   }
-`;
+`
 
-export default ProductStream;
+export default ProductStream

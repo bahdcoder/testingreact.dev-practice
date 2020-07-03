@@ -1,14 +1,14 @@
-import styled from 'styled-components';
-import React, { Fragment, FunctionComponent, ChangeEvent } from 'react';
+import styled from 'styled-components'
+import React, { FunctionComponent, ChangeEvent } from 'react'
 
 interface CheckboxPropsInterface {
-  label: string;
-  id: string;
-  checked?: boolean;
-  background?: string;
-  checkMarkBackground?: string;
-  borderColor?: string;
-  onChange: (event: ChangeEvent) => void;
+  label: string
+  id: string
+  checked?: boolean
+  background?: string
+  checkMarkBackground?: string
+  borderColor?: string
+  onChange: (event: ChangeEvent) => void
 }
 
 const Checkbox: FunctionComponent<CheckboxPropsInterface> = ({
@@ -20,7 +20,7 @@ const Checkbox: FunctionComponent<CheckboxPropsInterface> = ({
   background = '#000',
   checkMarkBackground = '#fff',
 }) => (
-  <Wrapper data-testid='Checkbox'>
+  <Wrapper data-testid="Checkbox">
     <Input checked={checked} onChange={onChange} type="checkbox" id={id} />
     <Label
       htmlFor={id}
@@ -31,7 +31,7 @@ const Checkbox: FunctionComponent<CheckboxPropsInterface> = ({
       <LabelText>{label}</LabelText>
     </Label>
   </Wrapper>
-);
+)
 
 const Wrapper = styled.div``
 
@@ -45,12 +45,12 @@ const LabelText = styled.span`
   transition: 0.25s ease-in-out;
   text-transform: capitalize;
   font-weight: bolder;
-`;
+`
 
 const Label = styled.label<{
-  background: string;
-  borderColor?: string;
-  checkMarkBackground: string;
+  background: string
+  borderColor?: string
+  checkMarkBackground: string
 }>`
   position: relative;
   display: inline-block;
@@ -69,10 +69,10 @@ const Label = styled.label<{
     left: 0px;
 
     display: inline-block;
-    background: ${props => props.background};
+    background: ${(props) => props.background};
     box-shadow: none;
     border: 1px solid
-      ${props => (props.borderColor ? props.borderColor : props.background)};
+      ${(props) => (props.borderColor ? props.borderColor : props.background)};
   }
   &::after {
     content: '';
@@ -84,12 +84,12 @@ const Label = styled.label<{
     top: 5px;
 
     display: inline-block;
-    border-left: 2px solid ${props => props.checkMarkBackground};
-    border-bottom: 2px solid ${props => props.checkMarkBackground};
+    border-left: 2px solid ${(props) => props.checkMarkBackground};
+    border-bottom: 2px solid ${(props) => props.checkMarkBackground};
     transform: rotate(-45deg);
     transition: 0.25s ease-in-out;
   }
-`;
+`
 
 const Input = styled.input`
   opacity: 0;
@@ -110,6 +110,6 @@ const Input = styled.input`
   &:focus + ${Label}::before {
     outline: rgb(59, 153, 252) auto 5px;
   }
-`;
+`
 
-export default Checkbox;
+export default Checkbox

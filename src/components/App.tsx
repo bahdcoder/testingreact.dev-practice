@@ -1,26 +1,24 @@
-import React from 'react';
-import { useQuery, queryCache } from 'react-query';
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import Header from './Header';
-import Axios from '../helpers/axios';
-import ProductStream from './ProductStream';
-import FiltersOffCanvas from './FiltersOffCanvas';
-import styled, { createGlobalStyle } from 'styled-components';
-// import { useProductLoader } from '../api/useProductLoader';
+import Header from './Header'
+import ProductStream from './ProductStream'
+import FiltersOffCanvas from './FiltersOffCanvas'
+import styled, { createGlobalStyle } from 'styled-components'
+
+import { StoreState } from '../types/Store'
+import { fetchProducts } from '../store/action-creators'
 
 const App = () => {
-  const { status, data, error, isFetching } = useQuery("posts", async () => {
-    const { data } = await Axios.get('/products');
+  const dispatch = useDispatch()
 
-    return data;
-  });
+  useEffect(() => {
+    dispatch(fetchProducts())
+  }, [dispatch])
 
-  console.log('>>>>>>>>>>>>>>', {
-      status,
-      data,
-      error,
-      isFetching
-  })
+  const products = useSelector<StoreState, StoreState['products']>(
+    (state) => state.products,
+  )
 
   return (
     <>
@@ -28,11 +26,11 @@ const App = () => {
       <Header />
       <FiltersOffCanvas />
       <Layout>
-        <ProductStream products={data || []} />
+        <ProductStream products={products.data} />
       </Layout>
     </>
-  );
-};
+  )
+}
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -45,10 +43,10 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Playfair Display', Arial, Helvetica, sans-serif;
   }
-`;
+`
 
 const Layout = styled.article`
   padding: 0 20px;
-`;
+`
 
-export default App;
+export default App
