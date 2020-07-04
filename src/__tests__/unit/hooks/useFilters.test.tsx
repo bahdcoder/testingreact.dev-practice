@@ -28,7 +28,7 @@ describe('The useFilters hook', () => {
         value={{
           showingFilters: true,
           toggleShowingFilters: toggleShowingFiltersMock,
-        }}
+        } as any}
       >
         <Button
           showingFiltersMessage={showingFiltersMessage}

@@ -1,6 +1,6 @@
-import Axios from 'axios'
+import AxiosPackage from 'axios'
 import { BASE_URL } from './constants'
 
-export default Axios.create({
+export const Axios = AxiosPackage.create({
   baseURL: BASE_URL,
 })

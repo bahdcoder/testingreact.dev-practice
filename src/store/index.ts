@@ -1,19 +1,29 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import {
+  createStore as createReduxStore,
+  combineReducers,
+  applyMiddleware,
+} from 'redux'
 
 import { StoreState } from '../types/Store'
 import thunk, { ThunkMiddleware } from 'redux-thunk'
 import products, { productsInitialState } from '../store/reducers/products'
 
-const initalState: StoreState = {
+export const initialState: StoreState = {
   products: productsInitialState,
 }
 
-const store = createStore(
-  combineReducers<StoreState>({
-    products,
-  }),
-  initalState,
-  applyMiddleware(thunk as ThunkMiddleware<StoreState>),
-)
+export const reducer = combineReducers<StoreState>({
+  products,
+})
 
-export default store
+export const createStore = (
+  storeReducer = reducer,
+  storeInitialState = initialState,
+) =>
+  createReduxStore(
+    storeReducer,
+    storeInitialState,
+    applyMiddleware(thunk as ThunkMiddleware<StoreState>),
+  )
+
+export default createStore(reducer, initialState)

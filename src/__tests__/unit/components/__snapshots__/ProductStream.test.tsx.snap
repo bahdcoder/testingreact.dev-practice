@@ -16,7 +16,7 @@ exports[`The <ProductStream /> component renders a list of Product tiles for eac
           alt="Adidas 1"
           class="sc-AxiKw cShrNR"
           data-testid="ProductTileImage"
-          src="https://testingreact-api.herokuapp.com./image.png"
+          src="http://localhost:3443./image.png"
         />
       </div>
       <div
@@ -45,7 +45,7 @@ exports[`The <ProductStream /> component renders a list of Product tiles for eac
           alt="Nike 1"
           class="sc-AxiKw cShrNR"
           data-testid="ProductTileImage"
-          src="https://testingreact-api.herokuapp.com./image-1.png"
+          src="http://localhost:3443./image-1.png"
         />
       </div>
       <div

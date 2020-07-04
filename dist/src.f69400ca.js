@@ -31768,7 +31768,170 @@ var store = (0, _redux.createStore)((0, _redux.combineReducers)({
 }), initalState, (0, _redux.applyMiddleware)(_reduxThunk.default));
 var _default = store;
 exports.default = _default;
-},{"redux":"../node_modules/redux/es/redux.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","../store/reducers/products":"store/reducers/products.ts"}],"../node_modules/shallowequal/index.js":[function(require,module,exports) {
+},{"redux":"../node_modules/redux/es/redux.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","../store/reducers/products":"store/reducers/products.ts"}],"../node_modules/use-debounce/esm/useDebouncedCallback.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = useDebouncedCallback;
+
+var _react = require("react");
+
+function useDebouncedCallback(callback, delay, options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var maxWait = options.maxWait;
+  var maxWaitHandler = (0, _react.useRef)(null);
+  var maxWaitArgs = (0, _react.useRef)([]);
+  var leading = options.leading;
+  var trailing = options.trailing === undefined ? true : options.trailing;
+  var leadingCall = (0, _react.useRef)(false);
+  var functionTimeoutHandler = (0, _react.useRef)(null);
+  var isComponentUnmounted = (0, _react.useRef)(false);
+  var debouncedFunction = (0, _react.useRef)(callback);
+  debouncedFunction.current = callback;
+  var cancelDebouncedCallback = (0, _react.useCallback)(function () {
+    clearTimeout(functionTimeoutHandler.current);
+    clearTimeout(maxWaitHandler.current);
+    maxWaitHandler.current = null;
+    maxWaitArgs.current = [];
+    functionTimeoutHandler.current = null;
+    leadingCall.current = false;
+  }, []);
+  (0, _react.useEffect)(function () {
+    // We have to set isComponentUnmounted to be truth, as fast-refresh runs all useEffects
+    isComponentUnmounted.current = false;
+    return function () {
+      // we use flag, as we allow to call callPending outside the hook
+      isComponentUnmounted.current = true;
+    };
+  }, []);
+  var debouncedCallback = (0, _react.useCallback)(function () {
+    var args = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+
+    maxWaitArgs.current = args;
+    clearTimeout(functionTimeoutHandler.current);
+
+    if (leadingCall.current) {
+      leadingCall.current = false;
+    }
+
+    if (!functionTimeoutHandler.current && leading && !leadingCall.current) {
+      debouncedFunction.current.apply(debouncedFunction, args);
+      leadingCall.current = true;
+    }
+
+    functionTimeoutHandler.current = setTimeout(function () {
+      var shouldCallFunction = true;
+
+      if (leading && leadingCall.current) {
+        shouldCallFunction = false;
+      }
+
+      cancelDebouncedCallback();
+
+      if (!isComponentUnmounted.current && trailing && shouldCallFunction) {
+        debouncedFunction.current.apply(debouncedFunction, args);
+      }
+    }, delay);
+
+    if (maxWait && !maxWaitHandler.current && trailing) {
+      maxWaitHandler.current = setTimeout(function () {
+        var args = maxWaitArgs.current;
+        cancelDebouncedCallback();
+
+        if (!isComponentUnmounted.current) {
+          debouncedFunction.current.apply(null, args);
+        }
+      }, maxWait);
+    }
+  }, [maxWait, delay, cancelDebouncedCallback, leading, trailing]);
+  var callPending = (0, _react.useCallback)(function () {
+    // Call pending callback only if we have anything in our queue
+    if (!functionTimeoutHandler.current) {
+      return;
+    }
+
+    debouncedFunction.current.apply(null, maxWaitArgs.current);
+    cancelDebouncedCallback();
+  }, [cancelDebouncedCallback]); // At the moment, we use 3 args array so that we save backward compatibility
+
+  return [debouncedCallback, cancelDebouncedCallback, callPending];
+}
+},{"react":"../node_modules/react/index.js"}],"../node_modules/use-debounce/esm/useDebounce.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = useDebounce;
+
+var _react = require("react");
+
+var _useDebouncedCallback = _interopRequireDefault(require("./useDebouncedCallback"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function valueEquality(left, right) {
+  return left === right;
+}
+
+function useDebounce(value, delay, options) {
+  var eq = options && options.equalityFn ? options.equalityFn : valueEquality;
+
+  var _a = (0, _react.useState)(value),
+      state = _a[0],
+      dispatch = _a[1];
+
+  var _b = (0, _useDebouncedCallback.default)((0, _react.useCallback)(function (value) {
+    return dispatch(value);
+  }, []), delay, options),
+      callback = _b[0],
+      cancel = _b[1],
+      callPending = _b[2];
+
+  var previousValue = (0, _react.useRef)(value);
+  (0, _react.useEffect)(function () {
+    // We need to use this condition otherwise we will run debounce timer for the first render (including maxWait option)
+    if (!eq(previousValue.current, value)) {
+      callback(value);
+      previousValue.current = value;
+    }
+  }, [value, callback, eq]);
+  return [state, cancel, callPending];
+}
+},{"react":"../node_modules/react/index.js","./useDebouncedCallback":"../node_modules/use-debounce/esm/useDebouncedCallback.js"}],"../node_modules/use-debounce/esm/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "useDebounce", {
+  enumerable: true,
+  get: function () {
+    return _useDebounce.default;
+  }
+});
+Object.defineProperty(exports, "useDebouncedCallback", {
+  enumerable: true,
+  get: function () {
+    return _useDebouncedCallback.default;
+  }
+});
+
+var _useDebounce = _interopRequireDefault(require("./useDebounce"));
+
+var _useDebouncedCallback = _interopRequireDefault(require("./useDebouncedCallback"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"./useDebounce":"../node_modules/use-debounce/esm/useDebounce.js","./useDebouncedCallback":"../node_modules/use-debounce/esm/useDebouncedCallback.js"}],"../node_modules/shallowequal/index.js":[function(require,module,exports) {
 //
 
 module.exports = function shallowEqual(objA, objB, compare, compareContext) {
@@ -34839,15 +35002,125 @@ var Wrapper = _styledComponents.default.header(_templateObject4());
 
 var _default = Header;
 exports.default = _default;
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","../hooks/useFilters":"hooks/useFilters.ts"}],"components/ActiveFilters.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _useFilters2 = _interopRequireDefault(require("../hooks/useFilters"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _templateObject3() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  align-items: center;\n  line-height: 34px;\n  font-size: 12px;\n  font-weight: 500;\n  color: rgb(155, 155, 155);\n  padding: 7px 10px 7px 10px;\n  border-radius: 2px;\n  border-width: 1px;\n  border-style: solid;\n  border-color: rgb(229, 229, 229);\n  border-image: initial;\n  transition: font-size 300ms ease-in 0s, line-height 300ms ease-in 0s,\n    padding 300ms ease-in 0s;\n"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-wrap: wrap;\n  width: 100%;\n  padding: 10px 20px;\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  width: 20px;\n  height: 20px;\n  margin-left: 6px;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var ActiveFilters = function ActiveFilters() {
+  var _useFilters = (0, _useFilters2.default)(),
+      debouncedSearch = _useFilters.debouncedSearch,
+      setSearch = _useFilters.setSearch,
+      search = _useFilters.search;
+
+  console.log('_::::::::', search, debouncedSearch);
+  var activeFilters = [[debouncedSearch, function () {
+    return setSearch('');
+  }]];
+
+  if (activeFilters.map(function (filter) {
+    return filter[0];
+  }).filter(Boolean).length === 0) {
+    return null;
+  }
+
+  return /*#__PURE__*/_react.default.createElement(Wrapper, null, activeFilters.map(function (_ref, index) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        filterValue = _ref2[0],
+        clearFilter = _ref2[1];
+
+    return /*#__PURE__*/_react.default.createElement(ActiveFilterButton, {
+      onClick: function onClick() {
+        return clearFilter();
+      },
+      key: index
+    }, filterValue, /*#__PURE__*/_react.default.createElement(CloseIcon, {
+      fill: "none",
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      strokeWidth: 2,
+      viewBox: "0 0 24 24",
+      stroke: "currentColor"
+    }, /*#__PURE__*/_react.default.createElement("path", {
+      d: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+    })));
+  }));
+};
+
+var CloseIcon = _styledComponents.default.svg(_templateObject());
+
+var Wrapper = _styledComponents.default.div(_templateObject2());
+
+var ActiveFilterButton = _styledComponents.default.button(_templateObject3());
+
+var _default = ActiveFilters;
+exports.default = _default;
 },{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","../hooks/useFilters":"hooks/useFilters.ts"}],"helpers/constants.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BASE_URL = void 0;
-var BASE_URL = 'https://testingreact-api.herokuapp.com';
+exports.TEST_PORT = exports.BASE_URL = void 0;
+var BASE_URL = 'http://localhost:3443';
 exports.BASE_URL = BASE_URL;
+var TEST_PORT = undefined || 3939;
+exports.TEST_PORT = TEST_PORT;
 },{}],"components/ProductTile.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -35377,7 +35650,94 @@ var useOutsideClick = function useOutsideClick(elementRef, handleOutsideClick) {
 
 var _default = useOutsideClick;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","document.contains":"../node_modules/document.contains/index.js"}],"components/FiltersOffCanvas.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","document.contains":"../node_modules/document.contains/index.js"}],"components/FiltersContent.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.FiltersContent = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _useFilters2 = _interopRequireDefault(require("../hooks/useFilters"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _templateObject4() {
+  var data = _taggedTemplateLiteral(["\n  color: rgb(155, 155, 155);\n  cursor: pointer;\n  transition: 0.1s;\n  font-size: 14px;\n  border: none;\n  background: none;\n\n  &:hover {\n    color: rgb(0, 0, 0);\n  }\n"]);
+
+  _templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject3() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  width: 100%;\n  justify-content: space-between;\n"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n  background-color: #fff;\n  width: 100%;\n  margin: 8px 0px;\n  padding: 35px 30px 30px 40px;\n  margin-bottom: 10px;\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  width: 100%;\n  border: 0;\n  margin: 0;\n  display: block;\n  background: none;\n  padding: 14px;\n  margin-top: 14px;\n  background-color: #f5f5f5;\n  border-radius: 0px;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var FiltersContent = function FiltersContent() {
+  var _useFilters = (0, _useFilters2.default)(),
+      search = _useFilters.search,
+      setSearch = _useFilters.setSearch;
+
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(FilterWrapper, null, /*#__PURE__*/_react.default.createElement(FilterHeader, null, /*#__PURE__*/_react.default.createElement("span", null, 'Search'), /*#__PURE__*/_react.default.createElement(FilterHeaderReset, {
+    onClick: function onClick() {
+      return setSearch('');
+    }
+  }, "Reset to default")), /*#__PURE__*/_react.default.createElement(SearchInput, {
+    placeholder: "largo",
+    value: search,
+    onChange: function onChange(event) {
+      return setSearch(event.target.value);
+    }
+  })));
+};
+
+exports.FiltersContent = FiltersContent;
+var _default = FiltersContent;
+exports.default = _default;
+
+var SearchInput = _styledComponents.default.input(_templateObject());
+
+var FilterWrapper = _styledComponents.default.div(_templateObject2());
+
+var FilterHeader = _styledComponents.default.div(_templateObject3());
+
+var FilterHeaderReset = _styledComponents.default.div(_templateObject4());
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","../hooks/useFilters":"hooks/useFilters.ts"}],"components/FiltersOffCanvas.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35394,6 +35754,8 @@ var _react = _interopRequireWildcard(require("react"));
 var _useFilters2 = _interopRequireDefault(require("../hooks/useFilters"));
 
 var _useOutsideClick = _interopRequireDefault(require("../hooks/useOutsideClick"));
+
+var _FiltersContent = _interopRequireDefault(require("./FiltersContent"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -35521,7 +35883,8 @@ var FiltersOffCanvas = function FiltersOffCanvas() {
 
   var _useFilters = (0, _useFilters2.default)(),
       showingFilters = _useFilters.showingFilters,
-      toggleShowingFilters = _useFilters.toggleShowingFilters;
+      toggleShowingFilters = _useFilters.toggleShowingFilters,
+      setSearch = _useFilters.setSearch;
 
   (0, _useOutsideClick.default)(offCanvasRef, function () {
     if (showingFilters) {
@@ -35541,8 +35904,10 @@ var FiltersOffCanvas = function FiltersOffCanvas() {
     fill: "#000",
     fillRule: "nonzero",
     d: "M0 2.902L2.727 0l8.535 9.087.232.246L14 12.001l-2.506 2.666-.232.246-8.316 8.854-.22.233L0 21.1l8.537-9.09.01-.01z"
-  }))), /*#__PURE__*/_react.default.createElement(InnerContent, null), /*#__PURE__*/_react.default.createElement(Footer, null, /*#__PURE__*/_react.default.createElement(ResetToDefaultButton, {
-    onClick: console.log
+  }))), /*#__PURE__*/_react.default.createElement(InnerContent, null, /*#__PURE__*/_react.default.createElement(_FiltersContent.default, null)), /*#__PURE__*/_react.default.createElement(Footer, null, /*#__PURE__*/_react.default.createElement(ResetToDefaultButton, {
+    onClick: function onClick() {
+      setSearch('');
+    }
   }, "Reset to defaults"), /*#__PURE__*/_react.default.createElement(ViewResultsButton, {
     "data-testid": "ViewResultsButton",
     onClick: toggleShowingFilters
@@ -35575,7 +35940,7 @@ var CanvasWrapper = _styledComponents.default.div(_templateObject9(), function (
 
 var _default = FiltersOffCanvas;
 exports.default = _default;
-},{"react-dom":"../node_modules/react-dom/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","react":"../node_modules/react/index.js","../hooks/useFilters":"hooks/useFilters.ts","../hooks/useOutsideClick":"hooks/useOutsideClick.ts"}],"../node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
+},{"react-dom":"../node_modules/react-dom/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","react":"../node_modules/react/index.js","../hooks/useFilters":"hooks/useFilters.ts","../hooks/useOutsideClick":"hooks/useOutsideClick.ts","./FiltersContent":"components/FiltersContent.tsx"}],"../node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -37135,7 +37500,7 @@ module.exports = require('./lib/axios');
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.Axios = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -37143,11 +37508,11 @@ var _constants = require("./constants");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _default = _axios.default.create({
+var Axios = _axios.default.create({
   baseURL: _constants.BASE_URL
 });
 
-exports.default = _default;
+exports.Axios = Axios;
 },{"axios":"../node_modules/axios/index.js","./constants":"helpers/constants.ts"}],"store/action-creators.ts":[function(require,module,exports) {
 "use strict";
 
@@ -37156,24 +37521,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.fetchProducts = void 0;
 
-var _axios = _interopRequireDefault(require("../helpers/axios"));
+var _axios = require("../helpers/axios");
 
 var _constants = require("../store/constants");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // ThunkAction<(1), (2), (3), (4)>
 // (1) The return value of the internal async function that will be returned by this thunk
 // (2) The type of data being fired in the last action
 // (3) The type of the extra arguments passed to redux
 // (4) The last action to be dispatched.
-var fetchProducts = function fetchProducts() {
+var fetchProducts = function fetchProducts(_ref) {
+  var _ref$search = _ref.search,
+      search = _ref$search === void 0 ? '' : _ref$search;
   return function (dispatch) {
     dispatch({
       type: _constants.FETCHING_PRODUCTS
     });
-    return _axios.default.get('products').then(function (_ref) {
-      var data = _ref.data;
+    return _axios.Axios.get("products?search=".concat(search)).then(function (_ref2) {
+      var data = _ref2.data;
       return dispatch({
         type: _constants.FETCHED_PRODUCTS,
         products: data
@@ -37193,15 +37558,21 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
+var _useDebounce3 = require("use-debounce");
+
 var _reactRedux = require("react-redux");
 
 var _Header = _interopRequireDefault(require("./Header"));
+
+var _ActiveFilters = _interopRequireDefault(require("./ActiveFilters"));
 
 var _ProductStream = _interopRequireDefault(require("./ProductStream"));
 
 var _FiltersOffCanvas = _interopRequireDefault(require("./FiltersOffCanvas"));
 
 var _styledComponents = _interopRequireWildcard(require("styled-components"));
+
+var _useFilters2 = _interopRequireDefault(require("../hooks/useFilters"));
 
 var _actionCreators = require("../store/action-creators");
 
@@ -37233,15 +37604,38 @@ function _templateObject() {
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var App = function App() {
   var dispatch = (0, _reactRedux.useDispatch)();
+
+  var _useFilters = (0, _useFilters2.default)(),
+      search = _useFilters.search;
+
+  var _useDebounce = (0, _useDebounce3.useDebounce)(search, 500),
+      _useDebounce2 = _slicedToArray(_useDebounce, 1),
+      debouncedSearch = _useDebounce2[0];
+
+  console.log('__________________ FROM APP.TSX', search, debouncedSearch);
   (0, _react.useEffect)(function () {
-    dispatch((0, _actionCreators.fetchProducts)());
-  }, [dispatch]);
+    dispatch((0, _actionCreators.fetchProducts)({
+      search: debouncedSearch
+    }));
+  }, [dispatch, debouncedSearch]);
   var products = (0, _reactRedux.useSelector)(function (state) {
     return state.products;
   });
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(GlobalStyle, null), /*#__PURE__*/_react.default.createElement(_Header.default, null), /*#__PURE__*/_react.default.createElement(_FiltersOffCanvas.default, null), /*#__PURE__*/_react.default.createElement(Layout, null, /*#__PURE__*/_react.default.createElement(_ProductStream.default, {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(GlobalStyle, null), /*#__PURE__*/_react.default.createElement(_Header.default, null), /*#__PURE__*/_react.default.createElement(_ActiveFilters.default, null), /*#__PURE__*/_react.default.createElement(_FiltersOffCanvas.default, null), /*#__PURE__*/_react.default.createElement(Layout, null, /*#__PURE__*/_react.default.createElement(_ProductStream.default, {
     products: products.data
   })));
 };
@@ -37252,7 +37646,7 @@ var Layout = _styledComponents.default.article(_templateObject2());
 
 var _default = App;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","./Header":"components/Header.tsx","./ProductStream":"components/ProductStream.tsx","./FiltersOffCanvas":"components/FiltersOffCanvas.tsx","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","../store/action-creators":"store/action-creators.ts"}],"components/FiltersWrapper.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","use-debounce":"../node_modules/use-debounce/esm/index.js","react-redux":"../node_modules/react-redux/es/index.js","./Header":"components/Header.tsx","./ActiveFilters":"components/ActiveFilters.tsx","./ProductStream":"components/ProductStream.tsx","./FiltersOffCanvas":"components/FiltersOffCanvas.tsx","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","../hooks/useFilters":"hooks/useFilters.ts","../store/action-creators":"store/action-creators.ts"}],"components/FiltersWrapper.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37260,9 +37654,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FiltersWrapper = void 0;
 
-var _filters = require("../context/filters");
+var _useDebounce3 = require("use-debounce");
 
 var _react = _interopRequireWildcard(require("react"));
+
+var _filters = require("../context/filters");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -37288,6 +37684,15 @@ var FiltersWrapper = function FiltersWrapper(_ref) {
       showingFilters = _useState2[0],
       setShowingFilters = _useState2[1];
 
+  var _useState3 = (0, _react.useState)(''),
+      _useState4 = _slicedToArray(_useState3, 2),
+      search = _useState4[0],
+      setSearch = _useState4[1];
+
+  var _useDebounce = (0, _useDebounce3.useDebounce)(search, 500),
+      _useDebounce2 = _slicedToArray(_useDebounce, 1),
+      debouncedSearch = _useDebounce2[0];
+
   var toggleBodyScrollBehaviour = function toggleBodyScrollBehaviour() {
     if (showingFilters) {
       document.body.style.overflow = 'scroll';
@@ -37298,7 +37703,10 @@ var FiltersWrapper = function FiltersWrapper(_ref) {
 
   return /*#__PURE__*/_react.default.createElement(_filters.FiltersContext.Provider, {
     value: {
+      search: search,
+      setSearch: setSearch,
       showingFilters: showingFilters,
+      debouncedSearch: debouncedSearch,
       toggleShowingFilters: function toggleShowingFilters() {
         toggleBodyScrollBehaviour();
         setShowingFilters(function (showing) {
@@ -37310,7 +37718,7 @@ var FiltersWrapper = function FiltersWrapper(_ref) {
 };
 
 exports.FiltersWrapper = FiltersWrapper;
-},{"../context/filters":"context/filters.ts","react":"../node_modules/react/index.js"}],"index.tsx":[function(require,module,exports) {
+},{"use-debounce":"../node_modules/use-debounce/esm/index.js","react":"../node_modules/react/index.js","../context/filters":"context/filters.ts"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -37358,7 +37766,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61951" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51039" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

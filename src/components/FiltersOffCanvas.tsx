@@ -12,6 +12,8 @@ import React, {
 import useFilters from '../hooks/useFilters'
 import useOutsideClick from '../hooks/useOutsideClick'
 
+import FiltersContent from './FiltersContent'
+
 const FiltersOffCanvas: FunctionComponent = () => {
   const offCanvasRef = useRef<HTMLDivElement>(null)
   const [portalNode] = useState(document.createElement('div'))
@@ -22,7 +24,7 @@ const FiltersOffCanvas: FunctionComponent = () => {
     return () => portalNode.remove()
   }, [portalNode])
 
-  const { showingFilters, toggleShowingFilters } = useFilters()
+  const { showingFilters, toggleShowingFilters, setSearch } = useFilters()
 
   useOutsideClick(offCanvasRef, () => {
     if (showingFilters) {
@@ -51,10 +53,16 @@ const FiltersOffCanvas: FunctionComponent = () => {
               </CloseCanvas>
             </Header>
 
-            <InnerContent></InnerContent>
+            <InnerContent>
+              <FiltersContent />
+            </InnerContent>
 
             <Footer>
-              <ResetToDefaultButton onClick={console.log}>
+              <ResetToDefaultButton
+                onClick={() => {
+                  setSearch('')
+                }}
+              >
                 Reset to defaults
               </ResetToDefaultButton>
               <ViewResultsButton

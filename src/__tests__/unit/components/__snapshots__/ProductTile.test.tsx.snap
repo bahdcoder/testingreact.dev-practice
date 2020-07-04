@@ -40,7 +40,7 @@ exports[`The <ProductTile /> component renders a product tile with name, image a
         alt="Example product name"
         class="sc-AxiKw cShrNR"
         data-testid="ProductTileImage"
-        src="https://testingreact-api.herokuapp.com/image.png"
+        src="http://localhost:3443/image.png"
       />
     </div>
     <div
