@@ -18,15 +18,16 @@ export const fetchProducts = (): ThunkAction<
   undefined,
   FetchedProductsAction
 > => {
-  return async (dispatch: Dispatch) => {
+  return (dispatch: Dispatch) => {
     dispatch({
       type: FETCHING_PRODUCTS,
     })
-    const { data }: AxiosResponse<Product[]> = await Axios.get('products')
 
-    return dispatch({
-      type: FETCHED_PRODUCTS,
-      products: data,
-    })
+    return Axios.get('products').then(({ data }: AxiosResponse<Product[]>) =>
+      dispatch({
+        type: FETCHED_PRODUCTS,
+        products: data,
+      }),
+    )
   }
 }

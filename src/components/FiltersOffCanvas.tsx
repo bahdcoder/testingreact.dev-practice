@@ -39,9 +39,9 @@ const FiltersOffCanvas: FunctionComponent = () => {
             <Header>
               <span>Filter products</span>
               <CloseCanvas
+                viewBox="0 0 14 24"
                 data-testid="CloseCanvas"
                 onClick={toggleShowingFilters}
-                viewBox="0 0 14 24"
               >
                 <path
                   fill="#000"

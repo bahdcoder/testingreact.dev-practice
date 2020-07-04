@@ -31713,7 +31713,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var productsInitialState = {
-  data: []
+  data: [],
+  loading: false
 };
 exports.productsInitialState = productsInitialState;
 
@@ -34823,6 +34824,7 @@ var Header = function Header() {
       toggleShowingFilters = _useFilters.toggleShowingFilters;
 
   return /*#__PURE__*/_react.default.createElement(Wrapper, null, /*#__PURE__*/_react.default.createElement(SpanHiddenOnMobile, null), /*#__PURE__*/_react.default.createElement(PageTitle, null, "TESTING ", /*#__PURE__*/_react.default.createElement("span", null), "REACT.DEV"), /*#__PURE__*/_react.default.createElement(FilterButton, {
+    "data-testid": "FilterButton",
     onClick: toggleShowingFilters
   }, "Filter"));
 };
@@ -34931,8 +34933,9 @@ var ProductTile = function ProductTile(_ref) {
   return /*#__PURE__*/_react.default.createElement(Wrapper, {
     "data-testid": "ProductTile"
   }, /*#__PURE__*/_react.default.createElement(ImageWrapper, null, image && /*#__PURE__*/_react.default.createElement(Image, {
+    alt: name,
     src: "".concat(_constants.BASE_URL).concat(image),
-    alt: name
+    "data-testid": "ProductTileImage"
   })), /*#__PURE__*/_react.default.createElement(Content, null, /*#__PURE__*/_react.default.createElement(Name, null, name), /*#__PURE__*/_react.default.createElement(Price, null, price)));
 };
 
@@ -35531,9 +35534,9 @@ var FiltersOffCanvas = function FiltersOffCanvas() {
     ref: offCanvasRef,
     showingFilters: showingFilters
   }, showingFilters ? /*#__PURE__*/_react.default.createElement(InnerWrapper, null, /*#__PURE__*/_react.default.createElement(Header, null, /*#__PURE__*/_react.default.createElement("span", null, "Filter products"), /*#__PURE__*/_react.default.createElement(CloseCanvas, {
+    viewBox: "0 0 14 24",
     "data-testid": "CloseCanvas",
-    onClick: toggleShowingFilters,
-    viewBox: "0 0 14 24"
+    onClick: toggleShowingFilters
   }, /*#__PURE__*/_react.default.createElement("path", {
     fill: "#000",
     fillRule: "nonzero",
@@ -37159,50 +37162,24 @@ var _constants = require("../store/constants");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 // ThunkAction<(1), (2), (3), (4)>
 // (1) The return value of the internal async function that will be returned by this thunk
 // (2) The type of data being fired in the last action
 // (3) The type of the extra arguments passed to redux
 // (4) The last action to be dispatched.
 var fetchProducts = function fetchProducts() {
-  return /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(dispatch) {
-      var _yield$Axios$get, data;
-
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              dispatch({
-                type: _constants.FETCHING_PRODUCTS
-              });
-              _context.next = 3;
-              return _axios.default.get('products');
-
-            case 3:
-              _yield$Axios$get = _context.sent;
-              data = _yield$Axios$get.data;
-              return _context.abrupt("return", dispatch({
-                type: _constants.FETCHED_PRODUCTS,
-                products: data
-              }));
-
-            case 6:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-
-    return function (_x) {
-      return _ref.apply(this, arguments);
-    };
-  }();
+  return function (dispatch) {
+    dispatch({
+      type: _constants.FETCHING_PRODUCTS
+    });
+    return _axios.default.get('products').then(function (_ref) {
+      var data = _ref.data;
+      return dispatch({
+        type: _constants.FETCHED_PRODUCTS,
+        products: data
+      });
+    });
+  };
 };
 
 exports.fetchProducts = fetchProducts;
@@ -37381,7 +37358,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65373" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61951" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

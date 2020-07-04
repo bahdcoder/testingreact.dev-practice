@@ -5,6 +5,7 @@ import { FETCHING_PRODUCTS, FETCHED_PRODUCTS } from '../../store/constants'
 
 export const productsInitialState: ProductsReducerState = {
   data: [],
+  loading: false,
 }
 
 const productsReducer: Reducer<ProductsReducerState, ProductActions> = (

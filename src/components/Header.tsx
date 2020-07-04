@@ -15,7 +15,9 @@ const Header = () => {
         REACT.DEV
       </PageTitle>
 
-      <FilterButton data-testid='FilterButton' onClick={toggleShowingFilters}>Filter</FilterButton>
+      <FilterButton data-testid="FilterButton" onClick={toggleShowingFilters}>
+        Filter
+      </FilterButton>
     </Wrapper>
   )
 }

@@ -13,8 +13,10 @@ exports[`The <ProductStream /> component renders a list of Product tiles for eac
         class="sc-AxirZ fUTalh"
       >
         <img
+          alt="Adidas 1"
           class="sc-AxiKw cShrNR"
-          src="https://testingreact-api.herokuapp.comimage.png"
+          data-testid="ProductTileImage"
+          src="https://testingreact-api.herokuapp.com./image.png"
         />
       </div>
       <div
@@ -22,7 +24,9 @@ exports[`The <ProductStream /> component renders a list of Product tiles for eac
       >
         <div
           class="sc-AxhCb iMwhLL"
-        />
+        >
+          Adidas 1
+        </div>
         <div
           class="sc-AxhUy dqKFMC"
         >
@@ -38,8 +42,10 @@ exports[`The <ProductStream /> component renders a list of Product tiles for eac
         class="sc-AxirZ fUTalh"
       >
         <img
+          alt="Nike 1"
           class="sc-AxiKw cShrNR"
-          src="https://testingreact-api.herokuapp.comimage-1.png"
+          data-testid="ProductTileImage"
+          src="https://testingreact-api.herokuapp.com./image-1.png"
         />
       </div>
       <div
@@ -47,7 +53,9 @@ exports[`The <ProductStream /> component renders a list of Product tiles for eac
       >
         <div
           class="sc-AxhCb iMwhLL"
-        />
+        >
+          Nike 1
+        </div>
         <div
           class="sc-AxhUy dqKFMC"
         >

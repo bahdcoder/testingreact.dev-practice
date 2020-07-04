@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The <ProductTile /> component renders a product tile with name and price only 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-AxjAm iPShpD"
+    data-testid="ProductTile"
+  >
+    <div
+      class="sc-AxirZ fUTalh"
+    />
+    <div
+      class="sc-AxgMl dtvmCV"
+    >
+      <div
+        class="sc-AxhCb iMwhLL"
+      >
+        Example product name
+      </div>
+      <div
+        class="sc-AxhUy dqKFMC"
+      >
+        from $12.99
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`The <ProductTile /> component renders a product tile with name, image and price 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-AxjAm iPShpD"
+    data-testid="ProductTile"
+  >
+    <div
+      class="sc-AxirZ fUTalh"
+    >
+      <img
+        alt="Example product name"
+        class="sc-AxiKw cShrNR"
+        data-testid="ProductTileImage"
+        src="https://testingreact-api.herokuapp.com/image.png"
+      />
+    </div>
+    <div
+      class="sc-AxgMl dtvmCV"
+    >
+      <div
+        class="sc-AxhCb iMwhLL"
+      >
+        Example product name
+      </div>
+      <div
+        class="sc-AxhUy dqKFMC"
+      >
+        from $12.99
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
